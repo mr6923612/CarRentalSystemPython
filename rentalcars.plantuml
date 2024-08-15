@@ -1,0 +1,83 @@
+@startuml
+' Define abstract class UserFactory
+abstract class UserFactory {
+    +create_user(username: str, email: str, password: str)
+}
+
+' Define concrete factories inheriting from UserFactory
+class AdminFactory {
+    +create_user(username: str, email: str, password: str)
+}
+
+class CustomerFactory {
+    +create_user(username: str, email: str, password: str)
+}
+
+' UserFactory relationships
+UserFactory <|-- AdminFactory
+UserFactory <|-- CustomerFactory
+
+' Define User class
+class User {
+    -username: str
+    -email: str
+    -password: str
+    -role: str = 'customer'
+    +save(db: Database)
+    +check_exists(db: Database)
+    +add_admin(db: Database)
+    +register_user(db: Database)
+    +login_user(db: Database)
+}
+
+' Define Car class
+class Car {
+    -make: str
+    -model: str
+    -year: int
+    -mileage: int
+    -daily_rate: float
+    -min_rent_period: int
+    -max_rent_period: int
+    -available_now: bool = True
+    +save(db: Database)
+    +add_car(db: Database)
+    +view_cars(db: Database)
+    +update_car(db: Database)
+    +delete_car(db: Database)
+}
+
+' Define Rental class
+class Rental {
+    -user_id: int
+    -car_id: int
+    -start_date: date
+    -end_date: date
+    -status: str
+    +save(db: Database)
+    +calculate_rental_fee(daily_rate: float, start_date: date, end_date: date): float
+    +book_car(db: Databasedb, user_id: int)
+    +manage_rental_bookings(db: Database)
+}
+
+' Define Database class
+class Database {
+    -connection
+    -cursor
+    +connect()
+    +create_tables()
+    +execute_query(query: str, params=tuple)
+    +fetch_all(query: str, params=tuple)
+    +fetch_one(query: str, params=tuple)
+    +close()
+}
+
+' Define relationships between classes
+User --> Database : uses
+Car --> Database : uses
+Rental --> Database : uses
+
+' Add associations
+User --> Rental : rents
+Car --> Rental : is rented
+@enduml
